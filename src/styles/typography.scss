@@ -1,0 +1,23 @@
+// Literary-edition typography: one book face, for narration and interface alike.
+
+html {
+	font-family: var(--font-narration);
+	font-size: 100%;
+	font-kerning: normal;
+	font-feature-settings:
+		"liga" 1,
+		"dlig" 1,
+		"onum" 1;
+	text-rendering: optimizelegibility;
+	-webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+	margin: 0;
+	font-weight: 400;
+}
+
+p {
+	margin: 0;
+}

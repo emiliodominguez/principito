@@ -1,0 +1,276 @@
+// Narration. In book mode this is the page itself; in film mode each line is an overlay on the set.
+
+.notice {
+	display: none;
+	margin: var(--space-16) var(--gutter) 0;
+	color: var(--color-haze);
+	font-family: var(--font-interface);
+	font-size: var(--text-interface);
+	text-align: center;
+}
+
+:global([data-capable="no"]) .notice {
+	display: block;
+}
+
+.colophon {
+	display: grid;
+	justify-items: center;
+	gap: var(--space-3);
+	max-width: 44rem;
+	margin-inline: auto;
+	padding: 0 var(--gutter) var(--space-12);
+	color: var(--color-haze);
+	font-family: var(--font-interface);
+	font-size: var(--text-fine);
+	line-height: 1.5;
+	text-align: center;
+}
+
+.restart {
+	min-height: var(--control-size);
+	padding-inline: var(--space-4);
+	color: var(--color-paper);
+	font-size: var(--text-interface);
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+:global([data-mode="film"]) .colophon {
+	position: fixed;
+	bottom: calc(var(--space-16) + var(--safe-bottom));
+	left: 50%;
+	z-index: var(--layer-chrome);
+	width: min(100% - 2 * var(--gutter), 34rem);
+	color: var(--color-paper);
+	text-shadow: 0 1px 6px var(--shadow-ink);
+	visibility: hidden;
+	opacity: 0;
+	transition:
+		opacity 1.4s ease-out,
+		visibility 0s 1.4s;
+	translate: -50% 0;
+}
+
+:global([data-mode="film"][data-ended="true"]) .colophon {
+	visibility: visible;
+	opacity: 1;
+	transition:
+		opacity 1.4s ease-out 0.3s,
+		visibility 0s;
+}
+
+.story {
+	position: relative;
+	z-index: var(--layer-story);
+	display: grid;
+	gap: var(--space-16);
+	max-width: 56rem;
+	margin-inline: auto;
+	padding: var(--space-12) var(--gutter) var(--space-16);
+}
+
+.chapter {
+	display: grid;
+	gap: var(--space-6);
+}
+
+.still img {
+	width: 100%;
+	border-radius: 2px;
+	background-color: var(--color-teal);
+}
+
+.pages {
+	display: grid;
+	gap: var(--space-4);
+}
+
+.title {
+	color: var(--color-gold);
+	font-family: var(--font-interface);
+	font-size: var(--text-interface);
+	font-variant-caps: all-small-caps;
+	letter-spacing: 0.08em;
+}
+
+.beat {
+	max-width: 34ch;
+	font-size: var(--text-narration-small);
+	line-height: 1.32;
+	text-wrap: balance;
+}
+
+:global([data-mode="film"]) {
+	.story {
+		position: fixed;
+		inset: 0;
+		display: block;
+		max-width: none;
+		padding: 0;
+		overflow: clip;
+		pointer-events: none;
+	}
+
+	.chapter {
+		display: block;
+	}
+
+	.still,
+	.title {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+
+	.beat {
+		--edge: calc(var(--gutter) + var(--space-12));
+
+		position: absolute;
+		max-width: var(--measure);
+		isolation: isolate;
+		padding: 0.72em 0.95em 0.8em;
+		color: var(--color-ink);
+		font-size: var(--text-narration);
+		font-weight: 420;
+		line-height: 1.22;
+		letter-spacing: -0.003em;
+		filter: drop-shadow(1px 2px 2px var(--shadow-ink));
+		opacity: var(--beat-reveal, 0);
+		transform: translateY(calc((1 - var(--beat-reveal, 0)) * 0.5rem)) rotate(var(--slip-tilt, -0.7deg));
+		visibility: hidden;
+
+		// The slip of paper the line is set on, cut by hand: no two edges quite parallel.
+		&::before {
+			position: absolute;
+			inset: 0;
+			z-index: -1;
+			background-color: var(--color-paper);
+			background-image: linear-gradient(170deg, var(--wash-paper), transparent 40%);
+			clip-path: polygon(
+				0.8% 4%,
+				22% 1.2%,
+				48% 3%,
+				76% 0.6%,
+				99.2% 3.2%,
+				100% 34%,
+				98.6% 66%,
+				99.6% 96%,
+				72% 98.6%,
+				44% 97%,
+				18% 99.4%,
+				0.4% 96.4%,
+				1.4% 62%,
+				0 30%
+			);
+			content: "";
+		}
+
+		// The closing lines leave the paper behind and sit on the night itself.
+		&[data-night="true"] {
+			--slip-tilt: 0deg;
+
+			color: var(--color-paper);
+			font-style: italic;
+			filter: none;
+			text-shadow: 0 1px 12px var(--shadow-ink);
+
+			&::before {
+				display: none;
+			}
+		}
+
+		&:nth-of-type(even) {
+			--slip-tilt: 0.6deg;
+
+			&::before {
+				clip-path: polygon(
+					0.2% 2%,
+					30% 3.4%,
+					62% 1%,
+					99.6% 3.8%,
+					98.8% 40%,
+					100% 72%,
+					98.6% 98%,
+					66% 96.4%,
+					34% 99%,
+					1.2% 97%,
+					0 58%,
+					1.2% 26%
+				);
+			}
+		}
+
+		&[data-active="true"] {
+			visibility: visible;
+		}
+
+		&[data-wide="left"] {
+			top: 50%;
+			left: var(--edge);
+			translate: 0 -50%;
+		}
+
+		&[data-wide="upper"] {
+			top: 22%;
+			left: var(--edge);
+		}
+
+		&[data-wide="right"] {
+			top: 50%;
+			right: calc(var(--edge) + var(--space-8));
+			translate: 0 -50%;
+		}
+
+		&[data-wide="top"] {
+			top: calc(var(--space-16) + var(--safe-top));
+			left: 50%;
+			max-width: 34ch;
+			text-align: center;
+			translate: -50% 0;
+		}
+
+		&[data-wide="center"] {
+			top: 34%;
+			left: 50%;
+			max-width: 30ch;
+			text-align: center;
+			translate: -50% -50%;
+		}
+
+		@media (max-aspect-ratio: 9 / 10) {
+			&[data-wide] {
+				top: auto;
+				right: auto;
+				left: 50%;
+				width: min(100% - 2 * var(--gutter), 28rem);
+				max-width: none;
+				font-size: clamp(1.25rem, 5vw, 1.9rem);
+				text-align: center;
+				translate: -50% 0;
+			}
+
+			&[data-wide][data-tall="top"] {
+				top: calc(var(--space-16) + var(--safe-top));
+			}
+
+			&[data-wide][data-tall="bottom"] {
+				bottom: calc(var(--space-16) + var(--safe-bottom));
+			}
+
+			&[data-wide][data-tall="center"] {
+				top: 26%;
+			}
+		}
+	}
+}
+
+:global([data-still="true"]) .story {
+	display: none;
+}
+
+:global([data-mode="film"]) .restart {
+	color: var(--color-paper);
+}

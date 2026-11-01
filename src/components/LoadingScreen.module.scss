@@ -1,0 +1,73 @@
+.loader {
+	position: fixed;
+	inset: 0;
+	z-index: var(--layer-loading);
+	display: none;
+	place-items: center;
+	background-color: var(--color-deep-teal);
+	background-image: radial-gradient(ellipse at 50% 45%, var(--color-teal), var(--color-deep-teal) 70%);
+	transition:
+		opacity 900ms ease-out,
+		visibility 0s 900ms;
+}
+
+:global([data-mode="film"]) .loader {
+	display: grid;
+}
+
+:global([data-stage="ready"]) .loader {
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.waiting {
+	position: fixed;
+	bottom: calc(var(--space-16) + var(--safe-bottom));
+	left: 50%;
+	z-index: var(--layer-chrome);
+	display: none;
+	color: var(--color-cream);
+	font-style: italic;
+	font-size: var(--text-narration-small);
+	text-shadow: 0 1px 3px var(--shadow-ink);
+	translate: -50% 0;
+}
+
+:global([data-waiting="true"]) .waiting {
+	display: block;
+}
+
+.mark {
+	--loaded: 0;
+
+	display: grid;
+	justify-items: center;
+	gap: var(--space-4);
+}
+
+.star {
+	width: 3rem;
+	height: 3rem;
+	fill: var(--color-gold);
+	transform-origin: 50% 8%;
+	animation: sway 1.8s ease-in-out infinite alternate;
+}
+
+.caption {
+	color: var(--color-cream);
+	font-family: var(--font-narration);
+	font-size: var(--text-narration-small);
+	font-style: italic;
+	opacity: calc(0.65 + var(--loaded) * 0.35);
+}
+
+@keyframes sway {
+	from {
+		transform: rotate(-7deg);
+	}
+
+	to {
+		transform: rotate(7deg);
+	}
+}

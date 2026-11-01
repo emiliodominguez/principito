@@ -1,0 +1,18 @@
+---
+import ChapterNavigation from "#components/ChapterNavigation.astro";
+import LoadingScreen from "#components/LoadingScreen.astro";
+import StoryExperience from "#components/StoryExperience.astro";
+import StoryText from "#components/StoryText.astro";
+import { es } from "#i18n/es";
+import Base from "#layouts/Base.astro";
+---
+
+<Base copy={es} alternate="/">
+	<a class="visually-hidden" href="#story">
+		{es.ui.skipToStory}
+	</a>
+	<LoadingScreen copy={es} />
+	<StoryExperience copy={es} />
+	<StoryText copy={es} />
+	<ChapterNavigation copy={es} alternate="/" />
+</Base>

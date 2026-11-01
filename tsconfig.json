@@ -1,0 +1,21 @@
+{
+	"extends": "astro/tsconfigs/strictest",
+	"compilerOptions": {
+		"target": "ES2023",
+		"lib": ["ES2023", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noPropertyAccessFromIndexSignature": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"allowJs": true,
+		"checkJs": false,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"types": ["node"]
+	},
+	"include": [".astro/types.d.ts", "src", "tests", "vitest.config.ts", "astro.config.mjs"],
+	"exclude": ["node_modules", "dist"]
+}

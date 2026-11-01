@@ -1,0 +1,52 @@
+---
+import type { Catalogue } from "#i18n/en";
+import { CHAPTERS } from "#story/chapters";
+
+import styles from "./StoryExperience.module.scss";
+
+interface Props {
+	readonly copy: Catalogue;
+}
+
+const { copy } = Astro.props;
+const screens = CHAPTERS.reduce((sum, chapter) => sum + chapter.length, 0);
+const hotspots = CHAPTERS.flatMap((chapter) =>
+	chapter.hotspots.map((hotspot) => ({
+		key: `${chapter.id}.${hotspot.id}`,
+		from: hotspot.from,
+		to: hotspot.to,
+		label: copy.hotspots[hotspot.id as keyof typeof copy.hotspots],
+	})),
+);
+---
+
+<div class={styles["stage"]} aria-hidden="true">
+	<canvas class={styles["canvas"]} data-canvas></canvas>
+	<div class={styles["safe-area"]} data-safe-area></div>
+</div>
+<div class={styles["track"]} data-track style={`--screens: ${screens}`}></div>
+<div class={styles["hotspots"]}>
+	{hotspots.map((hotspot) => (
+		<button
+			class={styles["hotspot"]}
+			type="button"
+			data-hotspot={hotspot.key}
+			data-from={hotspot.from}
+			data-to={hotspot.to}
+			data-active="false"
+			tabindex="-1"
+		>
+			<svg class={styles["ring"]} viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.7L12 17.1l-5.9 3.5 1.6-6.7L2.5 9.4l6.8-.6z" />
+			</svg>
+			<span class={styles["hotspot-label"]}>{hotspot.label}</span>
+		</button>
+	))}
+</div>
+
+<script>
+	if (document.documentElement.dataset["mode"] === "film") {
+		// Book mode never pays for Three.js: the engine is only requested here.
+		void import("#engine/boot").then(({ boot }) => boot());
+	}
+</script>

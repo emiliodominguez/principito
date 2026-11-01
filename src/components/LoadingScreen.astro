@@ -1,0 +1,23 @@
+---
+import type { Catalogue } from "#i18n/en";
+
+import styles from "./LoadingScreen.module.scss";
+
+interface Props {
+	readonly copy: Catalogue;
+}
+
+const { copy } = Astro.props;
+---
+
+<p class={styles["waiting"]} role="status">
+	{copy.ui.loadingChapter}
+</p>
+<div class={styles["loader"]} data-loader role="status">
+	<div class={styles["mark"]} data-loader-meter>
+		<svg class={styles["star"]} viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.7L12 17.1l-5.9 3.5 1.6-6.7L2.5 9.4l6.8-.6z" />
+		</svg>
+		<p class={styles["caption"]}>{copy.ui.loading}</p>
+	</div>
+</div>

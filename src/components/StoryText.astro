@@ -1,0 +1,56 @@
+---
+import type { Catalogue } from "#i18n/en";
+import { format } from "#i18n/index";
+import { CHAPTERS } from "#story/chapters";
+
+import styles from "./StoryText.module.scss";
+
+interface Props {
+	readonly copy: Catalogue;
+}
+
+const { copy } = Astro.props;
+const chapters = CHAPTERS.map((chapter, index) => {
+	const text = copy.chapters[chapter.id];
+	return {
+		chapter,
+		text,
+		lines: text.beats as unknown as Record<string, string>,
+		heading: format(copy.ui.chapterLabel, { number: index + 1, title: text.title }),
+	};
+});
+---
+
+<p class={styles["notice"]} role="note">
+	{copy.ui.fallbackNotice}
+</p>
+<main id="story" class={styles["story"]}>
+	{chapters.map(({ chapter, text, lines, heading }) => (
+		<section class={styles["chapter"]} id={`chapter-${chapter.id}`} aria-label={heading}>
+			<picture class={styles["still"]}>
+				<source media="(max-aspect-ratio: 9/10)" srcset={`/fallback/${chapter.id}-tall.webp`} />
+				<img src={`/fallback/${chapter.id}-wide.webp`} alt={text.alt} loading="lazy" decoding="async" width="1600" height="900" />
+			</picture>
+			<div class={styles["pages"]}>
+				<h2 class={styles["title"]}>{text.title}</h2>
+				{chapter.beats.map((beat) => (
+					<p
+						class={styles["beat"]}
+						data-beat={`${chapter.id}.${beat.id}`}
+						data-night={beat.night ? "true" : undefined}
+						data-wide={beat.wide}
+						data-tall={beat.tall}
+					>
+						{lines[beat.id]}
+					</p>
+				))}
+			</div>
+		</section>
+	))}
+</main>
+<footer class={styles["colophon"]}>
+	<p>{copy.ui.colophon}</p>
+	<button class={styles["restart"]} type="button" data-restart data-film-only>
+		{copy.ui.restart}
+	</button>
+</footer>

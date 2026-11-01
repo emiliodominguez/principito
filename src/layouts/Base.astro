@@ -1,0 +1,84 @@
+---
+import "@fontsource-variable/newsreader/index.css";
+import "@fontsource-variable/newsreader/wght-italic.css";
+import "#styles/story.scss";
+
+import type { Catalogue } from "#i18n/en";
+
+interface Props {
+	readonly copy: Catalogue;
+	readonly alternate: string;
+}
+
+const { copy, alternate } = Astro.props;
+---
+
+<!doctype html>
+<html lang={copy.meta.lang} data-mode="book">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="theme-color" content="#1f4d5a" />
+		<title>{copy.meta.title}</title>
+		<meta name="description" content={copy.meta.description} />
+		<link rel="alternate" hreflang={copy.meta.lang === "en" ? "es" : "en"} href={alternate} />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<script is:inline>
+			// Chosen before first paint, so a capable device never flashes the book layout.
+			{
+				// First visit to the home page: follow the browser's language. A choice made with the language link always wins.
+				let language = null;
+				try {
+					language = localStorage.getItem("story-language");
+				} catch {
+					language = null;
+				}
+				const preferred = (navigator.languages?.[0] ?? navigator.language ?? "").toLowerCase();
+				if (location.pathname === "/" && language !== "en" && (language === "es" || preferred.startsWith("es"))) {
+					location.replace("/es/" + location.search + location.hash);
+				}
+
+				const params = new URLSearchParams(location.search);
+				const requested = params.get("mode");
+				let stored = null;
+				try {
+					stored = localStorage.getItem("story-mode");
+				} catch {
+					stored = null;
+				}
+				const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+				const canvas = document.createElement("canvas");
+				const capable = Boolean(canvas.getContext("webgl2", { failIfMajorPerformanceCaveat: params.get("gpu") !== "any" }));
+				const film = capable && (requested ? requested === "film" : stored ? stored === "film" : !calm);
+				document.documentElement.dataset.mode = film ? "film" : "book";
+				document.documentElement.dataset.capable = capable ? "yes" : "no";
+				if (requested) {
+					try {
+						localStorage.setItem("story-mode", requested);
+					} catch {
+						// Private windows may refuse storage; the choice simply lasts for this visit.
+					}
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<slot />
+		<script>
+			import { inject } from "@vercel/analytics";
+
+			// Page views go to Vercel Web Analytics; development only logs them to the console.
+			inject({ mode: import.meta.env.DEV ? "development" : "production" });
+
+			// Remembers an explicit language choice, so it outranks the browser's setting from then on.
+			document.querySelector<HTMLElement>("[data-language]")?.addEventListener("click", (event) => {
+				const choice = event.currentTarget instanceof HTMLElement ? event.currentTarget.dataset["language"] : undefined;
+				try {
+					if (choice) localStorage.setItem("story-language", choice);
+				} catch {
+					// Private windows may refuse storage; the choice then lasts for this visit only.
+				}
+			});
+		</script>
+	</body>
+</html>

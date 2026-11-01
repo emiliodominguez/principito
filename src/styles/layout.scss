@@ -1,0 +1,63 @@
+// Page shell. Without JavaScript or WebGL the document is a plain illustrated book; film mode is an enhancement.
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	min-height: 100%;
+	background-color: var(--color-deep-teal);
+	color: var(--color-cream);
+	text-size-adjust: 100%;
+}
+
+body {
+	min-height: 100%;
+	margin: 0;
+	overflow-x: clip;
+	background-color: var(--color-deep-teal);
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 3px;
+}
+
+button {
+	padding: 0;
+	border: 0;
+	color: inherit;
+	font: inherit;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+a {
+	color: inherit;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 1ms;
+		animation-duration: 1ms;
+		animation-iteration-count: 1;
+	}
+}

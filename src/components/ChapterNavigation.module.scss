@@ -1,0 +1,138 @@
+// Chapter stars and reading controls. Quiet on purpose: the set is the interface.
+
+.navigation {
+	position: fixed;
+	top: 50%;
+	right: calc(var(--space-4) + var(--safe-right));
+	z-index: var(--layer-chrome);
+	display: none;
+	translate: 0 -50%;
+}
+
+:global([data-mode="film"]) .navigation {
+	display: block;
+}
+
+.chapters {
+	display: grid;
+	gap: var(--space-1);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.chapter {
+	display: grid;
+	place-items: center;
+	width: var(--control-size);
+	height: var(--control-size);
+	border-radius: 50%;
+}
+
+.star {
+	width: 0.875rem;
+	height: 0.875rem;
+	fill: var(--color-cream);
+	opacity: 0.55;
+	transition:
+		transform 320ms ease-out,
+		opacity 320ms ease-out;
+}
+
+.chapter:hover .star {
+	opacity: 1;
+	transform: rotate(18deg);
+}
+
+.chapter[aria-current] .star {
+	width: 1.25rem;
+	height: 1.25rem;
+	fill: var(--color-gold);
+	opacity: 1;
+}
+
+:global([data-still="true"]) .navigation,
+:global([data-still="true"]) .controls {
+	display: none;
+}
+
+.controls {
+	position: fixed;
+	top: calc(var(--space-3) + var(--safe-top));
+	right: calc(var(--space-4) + var(--safe-right));
+	z-index: var(--layer-chrome);
+	display: flex;
+	align-items: center;
+	gap: var(--space-1);
+}
+
+:global([data-mode="film"]) [data-book-only],
+:global([data-mode="book"]) [data-film-only],
+:global([data-capable="no"]) [data-book-only] {
+	display: none;
+}
+
+.control {
+	display: grid;
+	place-items: center;
+	width: var(--control-size);
+	height: var(--control-size);
+	border-radius: 50%;
+	color: var(--color-cream);
+	opacity: 0.82;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.icon {
+	width: 1.375rem;
+	height: 1.375rem;
+	fill: none;
+	stroke: currentcolor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.waves {
+	display: none;
+}
+
+[aria-pressed="true"] .waves {
+	display: block;
+}
+
+[aria-pressed="true"] .mute {
+	display: none;
+}
+
+.language {
+	display: grid;
+	place-items: center;
+	min-height: var(--control-size);
+	padding-inline: var(--space-2);
+	color: var(--color-cream);
+	font-family: var(--font-interface);
+	font-size: var(--text-interface);
+	text-decoration: none;
+	opacity: 0.82;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+@media (max-aspect-ratio: 9 / 10) {
+	.navigation {
+		top: auto;
+		right: 50%;
+		bottom: calc(var(--space-1) + var(--safe-bottom));
+		translate: 50% 0;
+	}
+
+	.chapters {
+		display: flex;
+	}
+}

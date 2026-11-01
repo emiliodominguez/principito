@@ -1,0 +1,64 @@
+---
+import type { Catalogue } from "#i18n/en";
+import { format } from "#i18n/index";
+import { CHAPTERS } from "#story/chapters";
+
+import styles from "./ChapterNavigation.module.scss";
+
+interface Props {
+	readonly copy: Catalogue;
+	readonly alternate: string;
+}
+
+const { copy, alternate } = Astro.props;
+---
+
+<nav class={styles["navigation"]} aria-label={copy.ui.chapters}>
+	<ol class={styles["chapters"]}>
+		{CHAPTERS.map((chapter, index) => (
+			<li>
+				<a
+					class={styles["chapter"]}
+					href={`#chapter-${chapter.id}`}
+					data-chapter-link={index}
+					aria-label={format(copy.ui.chapterLabel, { number: index + 1, title: copy.chapters[chapter.id].title })}
+				>
+					<svg class={styles["star"]} viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.7L12 17.1l-5.9 3.5 1.6-6.7L2.5 9.4l6.8-.6z" />
+					</svg>
+				</a>
+			</li>
+		))}
+	</ol>
+</nav>
+<div class={styles["controls"]}>
+	<button
+		class={styles["control"]}
+		type="button"
+		data-sound
+		data-film-only
+		aria-pressed="false"
+		aria-label={copy.ui.soundOn}
+		data-label-on={copy.ui.soundOn}
+		data-label-off={copy.ui.soundOff}
+	>
+		<svg viewBox="0 0 24 24" aria-hidden="true" class={styles["icon"]}>
+			<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" />
+			<path class={styles["waves"]} d="M15 9c1.2 1.6 1.2 4.4 0 6M17.6 6.6c2.4 3 2.4 7.8 0 10.8" />
+			<path class={styles["mute"]} d="M15.5 9.5l5 5M20.5 9.5l-5 5" />
+		</svg>
+	</button>
+	<a class={styles["control"]} href="?mode=book" data-film-only aria-label={copy.ui.bookMode}>
+		<svg viewBox="0 0 24 24" aria-hidden="true" class={styles["icon"]}>
+			<path d="M12 6.5C10 5 7 4.6 4 5v13c3-.4 6 0 8 1.5 2-1.5 5-1.9 8-1.5V5c-3-.4-6 0-8 1.5zM12 6.5v13" />
+		</svg>
+	</a>
+	<a class={styles["control"]} href="?mode=film" data-book-only aria-label={copy.ui.filmMode}>
+		<svg viewBox="0 0 24 24" aria-hidden="true" class={styles["icon"]}>
+			<path d="M4 6h16v12H4zM9.5 9.5v5l5-2.5z" />
+		</svg>
+	</a>
+	<a class={styles["language"]} href={alternate} aria-label={copy.ui.languageLabel} data-language={copy.meta.lang === "en" ? "es" : "en"}>
+		{copy.ui.language}
+	</a>
+</div>
